@@ -44,8 +44,19 @@ module.exports = function(grunt) {
             }
         },
         jade: {       
-            files: {
-                './app/views/**/*.html': './app/views/**/*.jade'
+            compile: {
+                options: {
+                    data: {
+                        debug: false
+                    },
+                },
+                files: [{
+                        cwd: "app/",
+                        src: "**/*.jade",
+                        dest: "app/",
+                        expand: true,
+                        ext: ".html"
+                        }] 
             }
         },
         watch: {
@@ -63,6 +74,10 @@ module.exports = function(grunt) {
             app_lint: {
                 files:  ['<%= jshint.app_files.src %>'],
                 tasks:['jshint:app_files']
+            },
+            jade_compile: {
+                files: ['<%= jade.compile.files[0].src %>'],
+                tasks:['jade:compile']
             }
         }
     });

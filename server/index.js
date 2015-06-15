@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var app = express();
 var http = require('http').Server(app);
 
-mongoose.connect('mongodb://localhost/hackreactioner')
+mongoose.connect('mongodb://localhost/hackreactioner');
 
 
 require('./config/config.js')(app, express);
