@@ -8,7 +8,7 @@ var QuestionSchema = new mongoose.Schema({
 		Usefulness: [Number, Number],
 		Expectations: [Number, Number],
 		Experience: [Number, Number],
-		Whatever: [Number]
+		Whatever: Number
 	}
 });
 

@@ -10,7 +10,7 @@ module.exports = function(app, express) {
 	app.use(bodyParser.json());
 	app.use(express.static(__dirname + '../../app'));
 
-	app.use('api/question', questionRouter);
+	app.use('/api/question', questionRouter);
 
 
 	require('../question/questionRoutes.js')(questionRouter);
