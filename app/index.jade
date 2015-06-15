@@ -1,7 +1,10 @@
 doctype html
 html(lang="en")
   head
+    
   body
     h1 hello world
-    #container.col
-      .hello TTTThis is a test to make sure it'sall good
+
+    script(type='text/javascript' src='/bower_components/socket.io-client/socket.io.js')
+    script.
+      var socket = io();
