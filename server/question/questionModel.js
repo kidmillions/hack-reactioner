@@ -5,9 +5,12 @@ var QuestionSchema = new mongoose.Schema({
 	topic: String,
 	sprintName: String,
 	votes: {
-		Usefulness: [Number, Number],
-		Expectations: [Number, Number],
-		Experience: [Number, Number],
+		UsefulnessUp: Number,
+		ExpectationsUp: Number,
+		ExperienceUp: Number,
+		UsefulnessDown: Number,
+		ExpectationsDown: Number,
+		ExperienceDown: Number,
 		Whatever: Number
 	}
 });

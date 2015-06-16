@@ -11,4 +11,9 @@ module.exports = function (socket) {
   	console.log('new question');
   	socket.broadcast.emit('send:question', question);
   })
+
+  socket.on('send:message', function(message) {
+  	socket.broadcast.emit('send:message', message);
+  })
 };
+

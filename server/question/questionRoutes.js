@@ -5,6 +5,9 @@ module.exports = function(app) {
 		.get(questionsController.allQuestions)
 		.post(questionsController.newQuestion);
 
-	// app.get('/:id', questionsController.navToQuestion);
+
+	app.param('topic', questionsController.findQuestion);
+	app.post('/:topic/vote', questionsController.addVote);
+	app.get('/:topic/vote', questionsController.allVotes);
 
 };

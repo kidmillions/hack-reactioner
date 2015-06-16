@@ -5,8 +5,23 @@ html(lang="en")
     script(type='text/javascript' src='/bower_components/angular-route/angular-route.min.js')
     script(type='text/javascript' src='/bower_components/Chart.js/Chart.min.js')
     script(type='text/javascript' src='/app.js')
+    link(rel="stylesheet", href="/bower_components/foundation/css/normalize.min.css")
+    link(rel="stylesheet", href="/bower_components/foundation/css/foundation.min.css")
+    link(rel="stylesheet", href="/assets/css/styles.css")
   body(ng-app='hackReactioner')
-    ng-view
+    nav.top-bar(data-topbar role='navigation')
+        ul.title-area
+            li.name
+                h1
+                    a(href='#') Hack Reactions
+        section.top-bar-section
+            ul.right
+                li
+                    a Moderator! Submit a New Question
+    .container
+        ng-view
+    script(type='text/javascript' src='/bower_components/jquery/dist/jquery.min.js')
+    script(type='text/javascript' src='/bower_components/foundation/js/foundation.min.js')
     script(type='text/javascript' src='/bower_components/socket.io-client/socket.io.js')
     script.
       var socket = io();

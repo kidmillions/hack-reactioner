@@ -37,22 +37,67 @@ module.exports = {
 					topic: topic,
 					sprintName: sprintName,
 					votes: {
-						Usefulness: [0, 0],
-						Expectations: [0, 0],
-						Experience: [0, 0],
+						UsefulnessUp: 0,
+						ExpectationsUp: 0,
+						ExperienceUp: 0,
+						UsefulnessDown: 0,
+						ExpectationsDown: 0,
+						ExperienceDown: 0,
 						Whatever: 0
 					}
 				}
 				return createQuestion(newQuestion);
 			})
-			// .then(function(createdQuestion) {
-			// 	if (createdQuestion) {
-			// 		res.json(createdQuestion);
-			// 	}
-			// })
+			.then(function(createdQuestion) {
+				if (createdQuestion) {
+					res.json(createdQuestion);
+				}
+			})
 			.fail(function(error) {
 				next(error);
-			})
+			});
+	},
+	findQuestion: function (req, res, next, topic) {
+	  var findQuestion = Q.nbind(Question.findOne, Question);
+	  findQuestion({topic: topic})
+	    .then(function (question) {
+	      if (question) {
+	        req.question = question;
+	        next();
+	      } else {
+	        next(new Error('Question not found'));
+	      }
+	    })
+	    .fail(function (error) {
+	      next(error);
+	    });
+	},
+	addVote: function(req, res, next) {
+		var question = req.question;
+		question.votes.ExpectationsUp += req.body.expectations[0];
+		question.votes.ExpectationsDown += req.body.expectations[1];
+		question.votes.ExperienceUp += req.body.experience[0];
+		question.votes.ExperienceDown += req.body.experience[1];
+		question.votes.UsefulnessUp += req.body.usefulness[0];
+		question.votes.UsefulnessDown += req.body.usefulness[1];
+		question.votes.Whatever += req.body.whatever;
+		question.save(function (err, savedQuestion) {
+      		if (err) {
+        		next(err);
+      	} else {
+        	res.send(savedQuestion);
+      	}
+    	});
+	},
+	allVotes: function(req, res, next) {
+		var question = req.question;
+		var votes = {
+			expectations: [question.votes.ExpectationsUp, question.votes.ExpectationsDown],
+			experience: [question.votes.ExperienceUp, question.votes.ExperienceDown],
+			usefulness: [question.votes.UsefulnessUp, question.votes.UsefulnessDown],
+			whatever: question.votes.Whatever
+		}
+		res.json(votes);
 	}
 
 };

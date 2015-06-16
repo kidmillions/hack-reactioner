@@ -1,28 +1,53 @@
-h3 {{currentQuestion.topic}}
-.votes
+.row
+	.small-12.col
+		h6.sprint {{currentQuestion.sprintName}}
+		h1 Current HackReaction: 
+			span.current-question(ng-show='currentQuestion' ng-animate='animate-question') {{currentQuestion.topic}}
+
 chart-data(votes='totalVote')
-form(ng-submit='submitVote()')
-	.vote-buttons
-		label
-			input(type='checkbox' ng-model='expectationup' ng-true-value="1" ng-false-value="0") 
-			span Thanks! H/R went over-and-above my expectations on this.
-		label
-			input(type='checkbox' ng-model='usefulnessup' ng-true-value="1" ng-false-value="0")
-			span Productive - this was good for my growth.
-		label
-			input(type='checkbox' ng-model='experienceup' ng-true-value="1" ng-false-value="0")
-			span Fun - this was enjoyable for me.
-		label
-			input(type='checkbox' ng-model='whatever' ng-true-value="1" ng-false-value="0")
-			span Whatever - Nothing to report.
-		label
-			input(type='checkbox' ng-model='experiencedown' ng-true-value="1" ng-false-value="0")
-			span Bummer - this was unpleasant.
-		label
-			input(type='checkbox' ng-model='usefulnessdown' ng-true-value="1" ng-false-value="0")
-			span Counterproductive - this was actively bad for my growth.
-		label
-			input(type='checkbox' ng-model='expectationdown' ng-true-value="1" ng-false-value="0")
-			span Booo! - H/R fell short of my expectations on this.
-		input(placeholder='other comments')
-	button(type='submit') submit your vote
+.right
+	h3 Comments
+	ul.messages-list
+		li(ng-repeat='message in messages') {{message}}
+.thanks-text(ng-show='submitted')
+	h2.align-center Thanks for your input. Please wait for the next vote.
+.form-box(ng-hide='submitted')
+	form(ng-submit='submitVote()')
+		.vote-checkbox.positive
+			input(type='checkbox' name='expectationup' id='expectationup' ng-model='expectationup' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='expectationup').css-label 
+				strong Thanks! 
+				| H/R went over-and-above my expectations on this.
+		.vote-checkbox.positive
+			input(type='checkbox' name='usefulnessup' id='usefulnessup' ng-model='usefulnessup' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='usefulnessup').css-label 
+				strong Productive 
+				| - this was good for my growth.
+		.vote-checkbox.positive
+			input(type='checkbox' name='experienceup' id='experienceup' ng-model='experienceup' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='experienceup').css-label 
+				strong Fun
+				| - this was enjoyable for me.
+		.vote-checkbox
+			input(type='checkbox' name='whatever' id='whatever' ng-model='whatever' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='whatever').css-label
+				strong Whatever
+				| - Nothing to report.
+		.vote-checkbox.negative
+			input(type='checkbox' name='experiencedown' id='experiencedown' ng-model='experiencedown' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='experiencedown').css-label
+				strong Bummer
+				| - this was unpleasant.
+		.vote-checkbox.negative
+			input(type='checkbox' name='usefulnessdown' id='usefulnessdown' ng-model='usefulnessdown' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='usefulnessdown').css-label 
+				strong Counterproductive
+				| - this was actively bad for my growth.
+		.vote-checkbox.negative
+			input(type='checkbox' name='expectationdown' id='expectationdown' ng-model='expectationdown' ng-true-value="1" ng-false-value="0").css-checkbox
+			label(for='expectationdown').css-label 
+				strong Booo!
+				| - H/R fell short of my expectations on this.
+		.comment-input
+			input(placeholder='Got Something Else to Say?' ng-model='message')
+		button.submit-vote(type='submit') Submit

@@ -26,7 +26,6 @@ angular.module('hackReactioner', ['ngRoute'])
       				url: '/api/question',
     			})
     			.then(function(resp) {
-    				console.log(resp.data);
       				return resp.data;
     			});
 			},
@@ -64,23 +63,71 @@ angular.module('hackReactioner', ['ngRoute'])
     		}
   		};
 	})
-	.controller('voteCtrl', ['$scope', 'Socket', function($scope, Socket) {
+	.factory('Vote', ['$http', function($http) {
+		return {
+			postVote: function(vote, question) {
+				return $http({
+					method: 'POST',
+					url: '/api/question/' + question.topic + '/vote/',
+					data: vote
+				}).then(function(resp) {
+					return resp;
+				});
+			},
+			getVotes: function(question) {
+				return $http({
+     			 	method: 'GET',
+      				url: '/api/question/' + question.topic + '/vote/',
+    			})
+    			.then(function(resp) {
+      				return resp.data;
+    			});
+			}
+		};
+	}])
 
-		$scope.currentQuestion;
+
+	.controller('voteCtrl', ['$scope', 'Socket', 'Vote', 'Question', function($scope, Socket, Vote, Question) {
+		$scope.messages = [];
+
+		//TODO: get votes so far, structured as below
 		$scope.totalVote = {expectations: [0, 0],
 							usefulness: [0, 0],
 							experience: [0, 0],
 							whatever: 0};
 
+		$scope.getVotes = function(question, callback) {
+			Vote.getVotes(question)
+				.then(function(votes) {	
+					$scope.totalVote = votes;
+					callback();
+				});
+		};
+
+		$scope.getLastQuestion = function(callback) {
+			Question.getQuestions()
+				.then(function(questions) {	
+					$scope.currentQuestion = questions[questions.length - 1];
+					callback($scope.currentQuestion);
+				});
+		};
+
+		$scope.getLastQuestion(function(question) {		
+				$scope.getVotes(question, function() {
+					$scope.$emit('voteChange', $scope.totalVote);
+				});
+		});
+
 		
 		$scope.addVote = function(vote) {
-			$scope.totalVote.expectations[0] += vote.expectations[0];
-			$scope.totalVote.expectations[1] += vote.expectations[1];
-			$scope.totalVote.experience[0] += vote.experience[0];
-			$scope.totalVote.experience[1] += vote.experience[1];
-			$scope.totalVote.usefulness[0] += vote.usefulness[0];
-			$scope.totalVote.usefulness[1] += vote.usefulness[1];
-			$scope.totalVote.whatever += vote.whatever;
+
+				$scope.totalVote.expectations[0] += vote.expectations[0];
+				$scope.totalVote.expectations[1] += vote.expectations[1];
+				$scope.totalVote.experience[0] += vote.experience[0];
+				$scope.totalVote.experience[1] += vote.experience[1];
+				$scope.totalVote.usefulness[0] += vote.usefulness[0];
+				$scope.totalVote.usefulness[1] += vote.usefulness[1];
+				$scope.totalVote.whatever += vote.whatever;
 		};
 
 
@@ -88,8 +135,13 @@ angular.module('hackReactioner', ['ngRoute'])
 		Socket.on('send:question', function(question) {
 			console.log('new question arrived');
 			$scope.currentQuestion = question;
-		})
-
+			$scope.submitted = false;
+			$scope.totalVote = {expectations: [0, 0],
+							usefulness: [0, 0],
+							experience: [0, 0],
+							whatever: 0};
+			$scope.$emit('voteChange', $scope.totalVote);
+		});
 
 		$scope.submitVote = function() {
 			var vote = {
@@ -99,14 +151,23 @@ angular.module('hackReactioner', ['ngRoute'])
 				whatever: $scope.whatever || 0
 			};
 
-			//needs to also post to database
-
+			Vote.postVote(vote, $scope.currentQuestion);
 			Socket.emit('send:vote', vote);
+			Socket.emit('send:message', $scope.message);
 			$scope.addVote(vote);
+			$scope.messages.push($scope.message);
+			$scope.submitted = true;
+			$scope.$emit('voteChange', $scope.totalVote);
+			//do not allow revote until new question
 		};
 
 		Socket.on('send:vote', function (vote) {
+			console.log('received vote');
     		$scope.addVote(vote);
+  		});
+
+  		Socket.on('send:message', function(message) {
+  			$scope.messages.push(message);
   		});
 	}])
 	.controller('questionCtrl', ['$scope', 'Question', 'Socket', function($scope, Question, Socket) {
@@ -142,29 +203,34 @@ angular.module('hackReactioner', ['ngRoute'])
 					datasets: [
 						{
 							label: 'Positive',
-							fillColor: "rgba(220,220,220,0.2)",
-				            strokeColor: "rgba(220,220,220,1)",
-				            pointColor: "rgba(220,220,220,1)",
+							fillColor: "rgba(69, 173, 63,0.5)",
+				            strokeColor: "rgba(69, 173, 63,1)",
+				            pointColor: "rgba(69, 173, 63,1)",
 				            pointStrokeColor: "#fff",
 				            pointHighlightFill: "#fff",
-				            pointHighlightStroke: "rgba(220,220,220,1)",
+				            pointHighlightStroke: "rgba(69, 173, 63,1)",
 				            data: [scope.totalVote.expectations[0], scope.totalVote.usefulness[0], scope.totalVote.experience[0], scope.totalVote.whatever]
 						}, 
 						{
            					label: "Negative",
-            				fillColor: "rgba(151,187,205,0.2)",
-            				strokeColor: "rgba(151,187,205,1)",
-            				pointColor: "rgba(151,187,205,1)",
-            				pointStrokeColor: "#fff",
-            				pointHighlightFill: "#fff",
-            				pointHighlightStroke: "rgba(151,187,205,1)",
+            				fillColor: "rgba(162, 19, 28,0.5)",
+            				strokeColor: "rgba(162, 19, 28,1)",
+            				pointColor: "rgba(162, 19, 28,1)",
+            				pointStrokeColor: "#E4DDDD",
+            				pointHighlightFill: "#E4DDDD",
+            				pointHighlightStroke: "rgba(162, 19, 28,1)",
 				            data: [scope.totalVote.expectations[1], scope.totalVote.usefulness[1], scope.totalVote.experience[1]]
         				}
 					]
 				};
-				var voteChart = new Chart(ctx).Radar(data);
+				var voteChart = new Chart(ctx).Radar(data, {
+					pointLabelFontSize: 22,
+					pointLabelFontFamily: 'Arial',
+					pointLabelFontColor : "#E4DDDD",
+					angleLineColor : "rgba(0,0,0,.7)"
+				});
 
-				Socket.on('send:vote', function(v) {	
+				var updateChart = function() {
 					voteChart.datasets[0].points[0].value = scope.totalVote.expectations[0];
 					voteChart.datasets[0].points[1].value = scope.totalVote.usefulness[0];
 					voteChart.datasets[0].points[2].value = scope.totalVote.experience[0];
@@ -173,8 +239,10 @@ angular.module('hackReactioner', ['ngRoute'])
 					voteChart.datasets[1].points[1].value = scope.totalVote.usefulness[1];
 					voteChart.datasets[1].points[2].value = scope.totalVote.experience[1];
 					voteChart.update();
-				});
-				
+				};
+
+				Socket.on('send:vote', updateChart);
+				scope.$on('voteChange', updateChart);
 			}
 		};
 	});
