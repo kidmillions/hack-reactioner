@@ -19,13 +19,14 @@ module.exports = function(grunt) {
                 boss: true,
                 eqnull: true,
                 browser: true,
+                force: true,
                 globals: {}
             },
             gruntfile: {
                 src: 'Gruntfile.js'
             },
             app_files: {
-                src: ['app/**/*.js', 'index.js']
+                src: ['app/app.js', 'index.js'],
             }
         },
         mochaTest: {

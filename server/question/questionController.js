@@ -45,11 +45,11 @@ module.exports = {
 				}
 				return createQuestion(newQuestion);
 			})
-			.then(function(createdQuestion) {
-				if (createdQuestion) {
-					res.json(createdQuestion);
-				}
-			})
+			// .then(function(createdQuestion) {
+			// 	if (createdQuestion) {
+			// 		res.json(createdQuestion);
+			// 	}
+			// })
 			.fail(function(error) {
 				next(error);
 			})

@@ -29,21 +29,18 @@ angular.module('hackReactioner', ['ngRoute'])
 					data: question
 				}).then(function(resp) {
 					return console.log('posted new question: ', resp);
-				})
+				});
 			}
 		};
 	}])
 	.controller('questionCtrl', ['$scope', 'Question', function($scope, Question) {
 		$scope.data = {};
-		$scope.question = {
-			topic: '',
-			sprintName: ''
-		};
+		$scope.question = {};
+
 
 		$scope.getQuestions = function() {
 			Question.getQuestions()
-				.then(function(questions) {
-					
+				.then(function(questions) {	
 					$scope.data = questions;
 				});
 		};
@@ -51,9 +48,21 @@ angular.module('hackReactioner', ['ngRoute'])
   		$scope.getQuestions();
 
 
-		$scope.addQuestion = function(question) {
-			postQuestion(question);
+		$scope.postQuestion = function(question) {
+
+			Question.postQuestion(question);
+			$scope.question = {};
+			$scope.getQuestions();
 		};
 
 
 	}])
+	.directive('chartData', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				data: '='
+			},
+			templateUrl: 'partials/chartdata.html',
+		};
+	})

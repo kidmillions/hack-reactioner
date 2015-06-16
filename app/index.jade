@@ -7,12 +7,13 @@ html(lang="en")
   body(ng-app='hackReactioner')
     div(ng-controller='questionCtrl')
       h1 hello world
-      .questions(ng-repeat='d in data') {{d}}
+      .questions(ng-repeat='d in data') {{d.topic}}
+        chart-data(data='d')
       form(ng-submit='postQuestion(question)')
         input(ng-model="question.topic")
         input(ng-model='question.sprintName')
         button(type='submit') add question
-
+      
 
 
     script(type='text/javascript' src='/bower_components/socket.io-client/socket.io.js')
