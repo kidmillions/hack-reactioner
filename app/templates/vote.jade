@@ -1,7 +1,7 @@
 h3 {{currentQuestion.topic}}
-.votes(ng-repeat='vote in votes')
-	p {{vote}}
-chart-data(data='currentQuestion')
+.votes
+	{{totalVote}}
+//- chart-data(data='currentQuestion')
 form(ng-submit='submitVote()')
 	.vote-buttons
 		label
