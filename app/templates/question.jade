@@ -1,0 +1,29 @@
+h3 {{currentQuestion.topic}}
+.votes(ng-repeat='vote in votes')
+	p {{vote}}
+chart-data(data='currentQuestion')
+form(ng-submit='submitVote()')
+	.vote-buttons
+		label
+			input(type='checkbox' ng-model='expectationup' ng-true-value="1" ng-false-value="0") 
+			span Thanks! H/R went over-and-above my expectations on this.
+		label
+			input(type='checkbox' ng-model='usefulnessup' ng-true-value="1" ng-false-value="0")
+			span Productive - this was good for my growth.
+		label
+			input(type='checkbox' ng-model='experienceup' ng-true-value="1" ng-false-value="0")
+			span Fun - this was enjoyable for me.
+		label
+			input(type='checkbox' ng-model='whatever' ng-true-value="1" ng-false-value="0")
+			span Whatever - Nothing to report.
+		label
+			input(type='checkbox' ng-model='experiencedown' ng-true-value="1" ng-false-value="0")
+			span Bummer - this was unpleasant.
+		label
+			input(type='checkbox' ng-model='usefulnessdown' ng-true-value="1" ng-false-value="0")
+			span Counterproductive - this was actively bad for my growth.
+		label
+			input(type='checkbox' ng-model='expectationdown' ng-true-value="1" ng-false-value="0")
+			span Booo! - H/R fell short of my expectations on this.
+		input(placeholder='other comments')
+	button(type='submit') submit your vote

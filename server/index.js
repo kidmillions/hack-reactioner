@@ -10,9 +10,7 @@ mongoose.connect('mongodb://localhost/hackreactioner');
 
 require('./config/config.js')(app, express);
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-});
+io.on('connection', require('./config/socket.js'));
 
 
 http.listen(3000, function(){
