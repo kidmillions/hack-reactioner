@@ -1,9 +1,19 @@
 doctype html
 html(lang="en")
   head
-    
-  body
-    h1 hello world
+    script(type='text/javascript' src='/bower_components/angular/angular.min.js')
+    script(type='text/javascript' src='/bower_components/angular-route/angular-route.min.js')
+    script(type='text/javascript' src='/app.js')
+  body(ng-app='hackReactioner')
+    div(ng-controller='questionCtrl')
+      h1 hello world
+      .questions(ng-repeat='d in data') {{d}}
+      form(ng-submit='postQuestion(question)')
+        input(ng-model="question.topic")
+        input(ng-model='question.sprintName')
+        button(type='submit') add question
+
+
 
     script(type='text/javascript' src='/bower_components/socket.io-client/socket.io.js')
     script.

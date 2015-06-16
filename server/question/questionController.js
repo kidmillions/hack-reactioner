@@ -8,13 +8,16 @@ module.exports = {
 		findAll({})
 			.then(function(questions) {
 				console.log('lookin');
-				res.json(questions)
+				console.log(questions);
+				res.json(questions);
 			})
 			.fail(function(error) {
 				next(error);
 			});
 	},
 	newQuestion: function(req, res, next) {
+		console.log('called');
+		console.log(req.body);
 		var topic = req.body.topic;
 		var sprintName = req.body.sprintName;
 
