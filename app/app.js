@@ -65,6 +65,7 @@ angular.module('hackReactioner', ['ngRoute'])
   		};
 	})
 	.controller('voteCtrl', ['$scope', 'Socket', function($scope, Socket) {
+
 		$scope.currentQuestion;
 		$scope.totalVote = {expectations: [0, 0],
 							usefulness: [0, 0],
@@ -73,7 +74,6 @@ angular.module('hackReactioner', ['ngRoute'])
 
 		
 		$scope.addVote = function(vote) {
-
 			$scope.totalVote.expectations[0] += vote.expectations[0];
 			$scope.totalVote.expectations[1] += vote.expectations[1];
 			$scope.totalVote.experience[0] += vote.experience[0];
@@ -84,8 +84,7 @@ angular.module('hackReactioner', ['ngRoute'])
 		};
 
 
-
-
+		
 		Socket.on('send:question', function(question) {
 			console.log('new question arrived');
 			$scope.currentQuestion = question;
@@ -107,7 +106,6 @@ angular.module('hackReactioner', ['ngRoute'])
 		};
 
 		Socket.on('send:vote', function (vote) {
-			console.log('heard it');
     		$scope.addVote(vote);
   		});
 	}])
@@ -130,12 +128,53 @@ angular.module('hackReactioner', ['ngRoute'])
 			$scope.getQuestions();
 		};
 	}])
-	.directive('chartData', function() {
+	.directive('chartData', function(Socket) {
 		return {
 			restrict: 'E',
-			scope: {
-				data: '='
-			},
+			scope: false,
 			templateUrl: 'partials/chartdata.html',
+			link: function(scope, element, attrs) {
+				
+
+				var ctx = document.getElementById("voteChart").getContext("2d");
+				var data = {
+					labels: ['Expectations', 'Usefulness', 'Experience', 'Whatever'],
+					datasets: [
+						{
+							label: 'Positive',
+							fillColor: "rgba(220,220,220,0.2)",
+				            strokeColor: "rgba(220,220,220,1)",
+				            pointColor: "rgba(220,220,220,1)",
+				            pointStrokeColor: "#fff",
+				            pointHighlightFill: "#fff",
+				            pointHighlightStroke: "rgba(220,220,220,1)",
+				            data: [scope.totalVote.expectations[0], scope.totalVote.usefulness[0], scope.totalVote.experience[0], scope.totalVote.whatever]
+						}, 
+						{
+           					label: "Negative",
+            				fillColor: "rgba(151,187,205,0.2)",
+            				strokeColor: "rgba(151,187,205,1)",
+            				pointColor: "rgba(151,187,205,1)",
+            				pointStrokeColor: "#fff",
+            				pointHighlightFill: "#fff",
+            				pointHighlightStroke: "rgba(151,187,205,1)",
+				            data: [scope.totalVote.expectations[1], scope.totalVote.usefulness[1], scope.totalVote.experience[1]]
+        				}
+					]
+				};
+				var voteChart = new Chart(ctx).Radar(data);
+
+				Socket.on('send:vote', function(v) {	
+					voteChart.datasets[0].points[0].value = scope.totalVote.expectations[0];
+					voteChart.datasets[0].points[1].value = scope.totalVote.usefulness[0];
+					voteChart.datasets[0].points[2].value = scope.totalVote.experience[0];
+					voteChart.datasets[0].points[3].value = scope.totalVote.whatever;
+					voteChart.datasets[1].points[0].value = scope.totalVote.expectations[1];
+					voteChart.datasets[1].points[1].value = scope.totalVote.usefulness[1];
+					voteChart.datasets[1].points[2].value = scope.totalVote.experience[1];
+					voteChart.update();
+				});
+				
+			}
 		};
 	});

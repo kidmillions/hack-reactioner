@@ -3,10 +3,10 @@ html(lang="en")
   head
     script(type='text/javascript' src='/bower_components/angular/angular.min.js')
     script(type='text/javascript' src='/bower_components/angular-route/angular-route.min.js')
+    script(type='text/javascript' src='/bower_components/Chart.js/Chart.min.js')
     script(type='text/javascript' src='/app.js')
   body(ng-app='hackReactioner')
     ng-view
-      
     script(type='text/javascript' src='/bower_components/socket.io-client/socket.io.js')
     script.
       var socket = io();
