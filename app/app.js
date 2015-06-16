@@ -2,8 +2,8 @@ angular.module('hackReactioner', ['ngRoute'])
 	.config(function($routeProvider) {
   		$routeProvider
     		.when('/index', {
-      			templateUrl: '/templates/question.html',
-      			controller: 'questionCtrl'
+      			templateUrl: '/templates/vote.html',
+      			controller: 'voteCtrl'
     		})
     		.when('/all', {
     			templateUrl: '/templates/allQuestions.html', 
@@ -64,29 +64,9 @@ angular.module('hackReactioner', ['ngRoute'])
     		}
   		};
 	})
-	.controller('questionCtrl', ['$scope', 'Question', 'Socket', function($scope, Question, Socket) {
-		$scope.data = [];
+	.controller('voteCtrl', ['$scope', 'Socket', function($scope, Socket) {
+		$scope.currentQuestion;
 		$scope.votes = [];
-		$scope.question = {};
-		// $scope.currentQuestion = $scope.data[$scope.data.length - 1];
-
-
-		$scope.getQuestions = function() {
-			Question.getQuestions()
-				.then(function(questions) {	
-					$scope.data = questions;
-				});
-		};
-  
-  		$scope.getQuestions();
-
-
-		$scope.postQuestion = function(question) {
-			Question.postQuestion(question);
-			Socket.emit('send:question', question);
-			$scope.question = {};
-			$scope.getQuestions();
-		};
 
 		Socket.on('send:question', function(question) {
 			console.log('new question arrived');
@@ -105,15 +85,32 @@ angular.module('hackReactioner', ['ngRoute'])
 			//needs to also post to database
 
 			Socket.emit('send:vote', vote);
-			console.log(vote);
-			return vote;
+			$scope.votes.push(vote);
 		};
 
 		Socket.on('send:vote', function (vote) {
 			console.log('heard it');
     		$scope.votes.push(vote);
   		});
+	}])
+	.controller('questionCtrl', ['$scope', 'Question', 'Socket', function($scope, Question, Socket) {
+		$scope.data = [];
 
+		$scope.getQuestions = function() {
+			Question.getQuestions()
+				.then(function(questions) {	
+					$scope.data = questions;
+				});
+		};
+  
+  		$scope.getQuestions();
+
+		$scope.postQuestion = function(question) {
+			Question.postQuestion(question);
+			Socket.emit('send:question', question);
+			$scope.question = {};
+			$scope.getQuestions();
+		};
 	}])
 	.directive('chartData', function() {
 		return {
