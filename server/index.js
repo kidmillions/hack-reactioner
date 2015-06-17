@@ -14,5 +14,5 @@ io.on('connection', require('./config/socket.js'));
 
 
 http.listen(port, function(){
-  console.log('listening on *:3000');
+  console.log('listening on *:5000');
 });

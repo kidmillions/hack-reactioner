@@ -4,6 +4,7 @@ html(lang="en")
     script(type='text/javascript' src='/bower_components/angular/angular.min.js')
     script(type='text/javascript' src='/bower_components/angular-route/angular-route.min.js')
     script(type='text/javascript' src='/bower_components/Chart.js/Chart.min.js')
+    script(type='text/javascript' src='/bower_components/angular-animate/angular-animate.min.js')
     script(type='text/javascript' src='/app.js')
     link(rel="stylesheet", href="/bower_components/foundation/css/normalize.min.css")
     link(rel="stylesheet", href="/bower_components/foundation/css/foundation.min.css")
@@ -13,7 +14,7 @@ html(lang="en")
         ul.title-area
             li.name
                 h1
-                    a(href='#') Hack Reactions
+                    a(href='#/index') Hack Reactions
         section.top-bar-section
             ul.right
                 li
@@ -23,5 +24,6 @@ html(lang="en")
     script(type='text/javascript' src='/bower_components/jquery/dist/jquery.min.js')
     script(type='text/javascript' src='/bower_components/foundation/js/foundation.min.js')
     script(type='text/javascript' src='/bower_components/socket.io-client/socket.io.js')
+
     script.
       var socket = io();

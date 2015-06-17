@@ -1,4 +1,4 @@
-angular.module('hackReactioner', ['ngRoute'])
+angular.module('hackReactioner', ['ngRoute', 'ngAnimate'])
 	.config(function($routeProvider) {
   		$routeProvider
     		.when('/index', {
